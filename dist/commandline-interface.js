@@ -18,18 +18,20 @@ class CommandLineInterface {
     constructor() {
         this.game = new blackjack_game_1.default();
     }
-    displayPlayerHand(name, player) {
+    displayPlayerHand(name, player, showStatus) {
+        const splitAlert = player.canSplit ? ' (can split) ' : '';
         const playerHand = player.hand
             .map((hand) => d2(hand.rank) + hand.suit)
             .join(' ');
         const isCurrent = player === this.currentPlayer ? '-> ' : '   ';
         const points = d2(player.points);
         const credits = player.credit > 0 || player.bet > 0
-            ? `(${d5(player.credit)} - ${d5(player.bet)}) - `
-            : '';
-        console.log(`${isCurrent}${credits}${name} has ${points} points: ${playerHand}`);
+            ? `(  ${d5(player.credit)} - ${d5(player.bet)}) - `
+            : '                    ';
+        console.log(`${isCurrent}${credits}${name} - ${points} points: ${playerHand} ${splitAlert}`);
         player.splits.forEach((playerSplit, index) => {
-            this.displayPlayerHand(`Split  ${index}`, playerSplit);
+            const status = showStatus ? d5(playerSplit.status) + ' !!!' : '';
+            this.displayPlayerHand(`Split${index}  ${status}`, playerSplit, showStatus);
         });
     }
     displayHiddenHand() {
@@ -41,14 +43,14 @@ class CommandLineInterface {
         })
             .join(' ');
         console.log(`\nDealer has ** points: ${playerHand}`);
-        this.game.dealer.splits.forEach((playerSplit, index) => {
-            this.displayPlayerHand(`Split  ${index}`, playerSplit);
-        });
     }
-    displayHands() {
+    displayHands(showStatus) {
         console.clear();
+        const statusSpace = showStatus ? '         ' : '';
+        console.log(`   ( CREDIT -  BET )   PLAYER  ${statusSpace}   POINTS      HAND`);
         this.game.players.forEach((player, index) => {
-            this.displayPlayerHand(`Player ${index}`, player);
+            const status = showStatus ? d5(player.status) + ' !!!' : '';
+            this.displayPlayerHand(`Player${index} ${status}`, player, showStatus);
         });
     }
     handleActionInput(index, isSplit, canSplit) {
@@ -57,8 +59,8 @@ class CommandLineInterface {
         console.log('2. Stand');
         console.log('3. Double Down');
         if (canSplit)
-            console.log('4. Split');
-        console.log('Choose an option: ');
+            console.log('4. Split !!!');
+        console.log('\nChoose an option: ');
         const option = readline_sync_1.default.questionInt();
         console.log('\n');
         switch (option) {
@@ -78,7 +80,7 @@ class CommandLineInterface {
         console.log(`\nContinue?`);
         console.log('1. Yes');
         console.log('2. No');
-        console.log('Choose an option: ');
+        console.log('\nChoose an option: ');
         const option = readline_sync_1.default.questionInt();
         console.log('\n');
         if (option === 1)
@@ -98,9 +100,11 @@ class CommandLineInterface {
         players.forEach((player, index) => {
             if (player.status === player_1.PlayerStatus.NoCredit)
                 return;
+            if (player.points === 21)
+                return;
             while (player.status === player_1.PlayerStatus.Playing) {
                 this.currentPlayer = player;
-                this.displayHands();
+                this.displayHands(false);
                 this.displayHiddenHand();
                 this.game.playerPlay(player, this.handleActionInput(index, player.isSplit, player.canSplit));
             }
@@ -116,10 +120,9 @@ class CommandLineInterface {
             this.game.startRound();
             this.playersPlay(this.game.players);
             this.game.dealerPlay();
-            this.displayHands();
-            this.displayPlayerHand('\nDealer  ', this.game.dealer);
+            this.displayHands(true);
+            this.displayPlayerHand('\nDealer  ', this.game.dealer, false);
             console.log('\n');
-            this.showResults(this.game.players);
             if (!this.handleContinue())
                 break;
         }

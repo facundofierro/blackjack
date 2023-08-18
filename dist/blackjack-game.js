@@ -50,7 +50,7 @@ class BlackjackGame {
                 return;
             }
             player.addCard(this.deck.pop());
-            player.addCard(this.deck.pop());
+            player.hit(this.deck.pop()); // For the seccond card verify hit logic
         });
         this.dealer.hand = [];
         this.dealer.points = 0;

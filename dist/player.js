@@ -59,6 +59,8 @@ class Player {
         if (this.points === 21 && this.hand.length === 2)
             this.status = PlayerStatus.BlackJack;
         else if (this.points > 21) {
+            if (this.canSplit)
+                this.split();
             this.status = PlayerStatus.Lose;
         }
         else if (this.points === 21) {
@@ -66,6 +68,7 @@ class Player {
         }
     }
     split() {
+        this.canSplit = false;
         const splitPlayer = new Player();
         splitPlayer.addCard(this.removeCard());
         splitPlayer.isSplit = true;
