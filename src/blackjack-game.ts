@@ -29,6 +29,7 @@ export default class BlackjackGame {
         player.status = PlayerStatus.NoCredit
         return
       }
+      player.checkDoubleDown()
       //player hand
       const firstCard = this.deck.pop()!
       player.addCard(firstCard)
@@ -47,7 +48,7 @@ export default class BlackjackGame {
     return this.players.some((player: Player) => player.credit > 0)
   }
 
-  dealerPlay(): void {
+  public dealerPlay(): void {
     while (this.dealer.points < 17) {
       this.dealer.addCard(this.deck.pop()!)
     }
@@ -67,13 +68,12 @@ export default class BlackjackGame {
     player.splits.forEach((split: Player) => this.setPlayResult(split))
   }
 
-  playResult(
+  public playResult(
     playerPoints: number,
     dealerPoints: number,
     playerStatus: PlayerStatus
   ): PlayerStatus {
     const { Lose, Tie, Win, BlackJack } = PlayerStatus
-    if (playerStatus === BlackJack) return Win
     if (playerPoints > 21) return Lose
     if (playerPoints === dealerPoints) return Tie
     if (playerPoints > dealerPoints || this.dealer.points > 21) return Win

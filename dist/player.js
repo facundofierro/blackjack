@@ -29,6 +29,7 @@ class Player {
     bet = 0;
     parentPlayer;
     canSplit = false;
+    canDoubleDown = true;
     constructor() { }
     addBet(bet) {
         if (this.parentPlayer?.credit) {
@@ -74,6 +75,14 @@ class Player {
         splitPlayer.parentPlayer = this.parentPlayer || this;
         splitPlayer.addBet(this.bet);
         this.splits.push(splitPlayer);
+        splitPlayer.checkDoubleDown();
+        this.checkDoubleDown();
+    }
+    checkDoubleDown() {
+        if (this.parentPlayer)
+            this.canDoubleDown = this.parentPlayer.credit >= this.bet;
+        else
+            this.canDoubleDown = this.credit >= this.bet;
     }
     doubleDown(card) {
         this.addBet(this.bet);
@@ -93,16 +102,15 @@ class Player {
         let payout = 0;
         player.splits.forEach((split) => {
             payout += this.playerPayment(split);
-            payout += this.paySplits(split);
             split.bet = 0;
         });
         return payout;
     }
     playerPayment(player) {
         if (player.status === PlayerStatus.Tie)
-            return this.bet;
+            return player.bet;
         if (player.status === PlayerStatus.Win)
-            return this.bet * 2;
+            return player.bet * 2;
         return 0;
     }
 }

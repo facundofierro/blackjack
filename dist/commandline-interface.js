@@ -53,12 +53,13 @@ class CommandLineInterface {
             this.displayPlayerHand(`Player${index} ${status}`, player, showStatus);
         });
     }
-    handleActionInput(index, isSplit, canSplit) {
-        console.log(`\nTurn for ${isSplit ? 'split' : 'player'} ${index}`);
+    handleActionInput(index, player) {
+        console.log(`\nTurn for ${player.isSplit ? 'split' : 'player'} ${index}`);
         console.log('1. Hit');
         console.log('2. Stand');
-        console.log('3. Double Down');
-        if (canSplit)
+        if (player.canDoubleDown)
+            console.log('3. Double Down');
+        if (player.canSplit)
             console.log('4. Split !!!');
         console.log('\nChoose an option: ');
         const option = readline_sync_1.default.questionInt();
@@ -69,9 +70,10 @@ class CommandLineInterface {
             case 2:
                 return player_1.PlayerAction.Stand;
             case 3:
-                return player_1.PlayerAction.DoubleDown;
+                if (player.canDoubleDown)
+                    return player_1.PlayerAction.DoubleDown;
             case 4:
-                if (canSplit)
+                if (player.canSplit)
                     return player_1.PlayerAction.Split;
         }
         return player_1.PlayerAction.Stand;
@@ -97,7 +99,7 @@ class CommandLineInterface {
                 this.currentPlayer = player;
                 this.displayHands(false);
                 this.displayHiddenHand();
-                this.game.playerPlay(player, this.handleActionInput(index, player.isSplit, player.canSplit));
+                this.game.playerPlay(player, this.handleActionInput(index, player));
             }
             this.playersPlay(player.splits);
         });

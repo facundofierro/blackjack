@@ -70,16 +70,12 @@ export default class CommandLineInterface {
     })
   }
 
-  private handleActionInput(
-    index: number,
-    isSplit: boolean,
-    canSplit: boolean
-  ): PlayerAction {
-    console.log(`\nTurn for ${isSplit ? 'split' : 'player'} ${index}`)
+  private handleActionInput(index: number, player: Player): PlayerAction {
+    console.log(`\nTurn for ${player.isSplit ? 'split' : 'player'} ${index}`)
     console.log('1. Hit')
     console.log('2. Stand')
-    console.log('3. Double Down')
-    if (canSplit) console.log('4. Split !!!')
+    if (player.canDoubleDown) console.log('3. Double Down')
+    if (player.canSplit) console.log('4. Split !!!')
     console.log('\nChoose an option: ')
 
     const option = readlineSync.questionInt()
@@ -90,9 +86,9 @@ export default class CommandLineInterface {
       case 2:
         return PlayerAction.Stand
       case 3:
-        return PlayerAction.DoubleDown
+        if (player.canDoubleDown) return PlayerAction.DoubleDown
       case 4:
-        if (canSplit) return PlayerAction.Split
+        if (player.canSplit) return PlayerAction.Split
     }
     return PlayerAction.Stand
   }
@@ -117,10 +113,7 @@ export default class CommandLineInterface {
         this.currentPlayer = player
         this.displayHands(false)
         this.displayHiddenHand()
-        this.game.playerPlay(
-          player,
-          this.handleActionInput(index, player.isSplit, player.canSplit)
-        )
+        this.game.playerPlay(player, this.handleActionInput(index, player))
       }
       this.playersPlay(player.splits)
     })

@@ -27,6 +27,7 @@ export default class Player {
   public bet: number = 0
   public parentPlayer: Player | undefined
   public canSplit = false
+  public canDoubleDown = true
 
   constructor() {}
 
@@ -74,6 +75,14 @@ export default class Player {
     splitPlayer.parentPlayer = this.parentPlayer || this
     splitPlayer.addBet(this.bet)
     this.splits.push(splitPlayer)
+    splitPlayer.checkDoubleDown()
+    this.checkDoubleDown()
+  }
+
+  public checkDoubleDown() {
+    if (this.parentPlayer)
+      this.canDoubleDown = this.parentPlayer.credit >= this.bet
+    else this.canDoubleDown = this.credit >= this.bet
   }
 
   doubleDown(card: Card): void {

@@ -49,6 +49,7 @@ class BlackjackGame {
                 player.status = player_1.PlayerStatus.NoCredit;
                 return;
             }
+            player.checkDoubleDown();
             //player hand
             const firstCard = this.deck.pop();
             player.addCard(firstCard);
