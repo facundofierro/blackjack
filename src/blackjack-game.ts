@@ -97,5 +97,6 @@ export default class BlackjackGame {
       default:
       // Handle invalid action
     }
+    player.canSplit = false
   }
 }
