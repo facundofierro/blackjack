@@ -83,8 +83,6 @@ class BlackjackGame {
     }
     playResult(playerPoints, dealerPoints, playerStatus) {
         const { Lose, Tie, Win, BlackJack } = player_1.PlayerStatus;
-        if (playerStatus === BlackJack)
-            return Win;
         if (playerPoints > 21)
             return Lose;
         if (playerPoints === dealerPoints)
