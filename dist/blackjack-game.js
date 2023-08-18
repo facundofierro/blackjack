@@ -49,9 +49,14 @@ class BlackjackGame {
                 player.status = player_1.PlayerStatus.NoCredit;
                 return;
             }
-            player.addCard(this.deck.pop());
-            player.hit(this.deck.pop()); // For the seccond card verify hit logic
+            //player hand
+            const firstCard = this.deck.pop();
+            player.addCard(firstCard);
+            const secondCard = this.deck.pop();
+            player.hit(secondCard);
+            player.canSplit = firstCard.rank === secondCard.rank;
         });
+        //dealer hand
         this.dealer.hand = [];
         this.dealer.points = 0;
         this.dealer.addCard(this.deck.pop());

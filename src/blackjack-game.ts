@@ -29,13 +29,14 @@ export default class BlackjackGame {
         player.status = PlayerStatus.NoCredit
         return
       }
-      player.addCard(this.deck.pop()!)
+      //player hand
+      const firstCard = this.deck.pop()!
+      player.addCard(firstCard)
       const secondCard = this.deck.pop()!
       player.hit(secondCard)
-      player.canSplit = player.hand.some(
-        (handCard: Card) => handCard.rank === secondCard.rank
-      )
+      player.canSplit = firstCard.rank === secondCard.rank
     })
+    //dealer hand
     this.dealer.hand = []
     this.dealer.points = 0
     this.dealer.addCard(this.deck.pop()!)
