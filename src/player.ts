@@ -94,15 +94,14 @@ export default class Player {
     let payout = 0
     player.splits.forEach((split: Player) => {
       payout += this.playerPayment(split)
-      payout += this.paySplits(split)
       split.bet = 0
     })
     return payout
   }
 
   private playerPayment(player: Player) {
-    if (player.status === PlayerStatus.Tie) return this.bet
-    if (player.status === PlayerStatus.Win) return this.bet * 2
+    if (player.status === PlayerStatus.Tie) return player.bet
+    if (player.status === PlayerStatus.Win) return player.bet * 2
     return 0
   }
 }
