@@ -85,8 +85,11 @@ class BlackjackGame {
         const { Lose, Tie, Win, BlackJack } = player_1.PlayerStatus;
         if (playerPoints > 21)
             return Lose;
-        if (playerPoints === dealerPoints)
+        if (playerPoints === dealerPoints) {
+            if (playerStatus === BlackJack && this.dealer.hand.length > 2)
+                return Win;
             return Tie;
+        }
         if (playerPoints > dealerPoints || this.dealer.points > 21)
             return Win;
         return Lose;

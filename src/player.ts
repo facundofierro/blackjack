@@ -60,7 +60,6 @@ export default class Player {
     if (this.points === 21 && this.hand.length === 2)
       this.status = PlayerStatus.BlackJack
     else if (this.points > 21) {
-      if (this.canSplit) this.split()
       this.status = PlayerStatus.Lose
     } else if (this.points === 21) {
       this.status = PlayerStatus.Waiting
