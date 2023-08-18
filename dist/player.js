@@ -54,7 +54,6 @@ class Player {
         return card;
     }
     hit(card) {
-        this.canSplit = this.hand.some((handCard) => handCard.rank === card.rank);
         this.addCard(card);
         if (this.points === 21 && this.hand.length === 2)
             this.status = PlayerStatus.BlackJack;
