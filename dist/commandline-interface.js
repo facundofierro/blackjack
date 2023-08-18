@@ -87,15 +87,6 @@ class CommandLineInterface {
             return true;
         return false;
     }
-    showResults(players) {
-        players.forEach((player, index) => {
-            if (player.isSplit)
-                console.log(`Split  ${index} - ${player.status}`);
-            else
-                console.log(`Player ${index} - ${player.status}`);
-            this.showResults(player.splits);
-        });
-    }
     playersPlay(players) {
         players.forEach((player, index) => {
             if (player.status === player_1.PlayerStatus.NoCredit)
